@@ -1,2 +1,2 @@
 # SMoS
-Structured Messaging over Serial
+Structured Messaging over Serial (SMoS).
