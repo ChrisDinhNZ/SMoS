@@ -8,4 +8,5 @@ A SMoS is structured as follow:
 * Fifth byte is reserved (number of message types is 256 for now. If more message types need to be supported, this byte will be used.)
 * Sixth byte is message type
 * Remaining bytes are message content defined by the message type
-* Last byte will be the '*'# character indicating end of message
+* Last byte will be the '#' character indicating end of message
+* String with "*#" which consist of start character followed immediately with end character indicates a message reset.
