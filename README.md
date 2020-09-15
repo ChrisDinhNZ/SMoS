@@ -155,3 +155,7 @@ Message content, the Id associated with the LED i.e. 0x02.
 
 `Byte index 7`
 Binary representation of '#' indicating the end of the message.
+
+---
+
+[Assigned Service Types](AssignedServiceTypes.md)
