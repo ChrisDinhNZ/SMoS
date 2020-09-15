@@ -1,73 +1,157 @@
 ## SMoS - Structured Messaging over Serial
 
 A SMoS is structured as follow:
-* First byte will be the '*' character indicating start of message
-* Second byte is reserved (message max length is 255 for now. If larger message is to be supported, this byte will be used.)
-* Third byte indicate length of message including start and end characters
-* Forth byte will be used to indicate message options as follows:
-  + Private message type   (BIT0 = TRUE)
-  + Create request         (BIT1 = TRUE)
-  + Read request           (BIT2 = TRUE)
-  + Update request         (BIT3 = TRUE)
-  + Delete request         (BIT4 = TRUE)
-  + Notify response        (BIT5 = TRUE)
-
-* Fifth byte is reserved (number of message types is 255 for now, if more message types need to be supported, this byte will be used)
-* Sixth byte is message service type
-* Remaining bytes are message content defined by the message type
+* First byte is the '*' character indicating start of message
+* Second byte is used to indicate message type:
+  + Create request        (BIT0)
+  + Read request          (BIT1)
+  + Update request        (BIT2)
+  + Delete request        (BIT3)
+  + Notify response       (BIT4)
+  + Reserved              (BIT5)
+  + Reserved              (BIT6)
+  + Reserved              (BIT7)
+* Third byte is reserved for future use (this byte will be used to indicate message Id if confirmed messaging is required) 
+* Forth byte is reserved for future use (number of message service types is capped at 255 for now, this byte will be used if more is required)
+* Fifth byte is message service type
+* Sixth byte indicate length of message content
+* Remaining bytes minus the last byte are message content
 * Last byte will be the '#' character indicating end of message
-* String with "*#" which consist of start character followed immediately with end character indicates a message reset.
 
-### Examples
+String with "*#" which consist of start character followed immediately with end character indicates a reset message.
 
-#### Reset Message
+### Message Examples
 
-The reset message, which can be used to sync the sender and the recipient consists of a '*' immediately followed by a '#' character.
+#### Reset
+
+The Reset message, which can be used to sync the sender and the recipient consists of a '*' immediately followed by a '#' character.
 
 | Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
 
-#### Read Toggle State Message
+#### Toggle Service (0x01)
 
-The Toggle service consist of 2 states, ON or OFF. A sender can query the state of the service by sending the following message to the recipient.
-The `read toggle state` message contains 1 byte of content, which indicate `read toggle state of what` and the value can be from 0 - 255. It is
-up to the recipient to determine what the value is associate with what.
+The Toggle service allows the sender to query the state, update the state or be notified of state changes of a property belonging to the recipient.
+The Toggle service message contains 1 byte of content, an Id between 0 - 255 which maps to a property on the recipient side. It is
+up to the recipient to determine what the Id is mapped to what.
+
+##### LED example
+
+Consider an Arduino with an toggleable LED which it exposed as a Toggle Service with a property Id 0x02. A data terminal equipment (DTE) can interact with the LED as follow:
+
+###### Query current LED state (DTE --> Arduino)
 
 | Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| 2 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 |
-| 3 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 |
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 1 | - | - | - | 0 | 0 | 0 | 1 | 0 |
+| 2 | - | - | - | - | - | - | - | - |
+| 3 | - | - | - | - | - | - | - | - |
+| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
 | 7 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
 
 `Byte index 0`
 Binary representation of '*' indicating the start of the message.
 
 `Byte index 1`
-Reserved.
+BIT1 is true, this is a `read` message.
 
 `Byte index 2`
-Total bytes in message i.e 8 bytes
-
-`Byte index 3`
-This byte indicates the type of the message and whether the message service type is public or proprietry.
-* BIT0 is false, therefore this is a public message service type
-* BIT2 is true, this is a `read toggle state` request
-
-`Byte index 4`
 Reserved.
 
+`Byte index 3`
+Reserved.
+
+`Byte index 4`
+Service type, 0x01.
+
 `Byte index 5`
-Message service type, this `Toggle State Service`.
+Content length, 1 byte.
 
 `Byte index 6`
-The message specific content i.e. in this example is 0. So the sender is asking the recipient `what is the toggle state of the item id 0`.
+Message content, the Id associated with the LED i.e. 0x02.
+
+`Byte index 7`
+Binary representation of '#' indicating the end of the message.
+
+###### Toggle current LED state (DTE --> Arduino)
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+| 1 | - | - | - | 0 | 0 | 1 | 0 | 0 |
+| 2 | - | - | - | - | - | - | - | - |
+| 3 | - | - | - | - | - | - | - | - |
+| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 7 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+
+`Byte index 0`
+Binary representation of '*' indicating the start of the message.
+
+`Byte index 1`
+BIT2 is true, this is an `update` message.
+
+`Byte index 2`
+Reserved.
+
+`Byte index 3`
+Reserved.
+
+`Byte index 4`
+Service type, 0x01.
+
+`Byte index 5`
+Content length, 1 byte.
+
+`Byte index 6`
+Message content, the Id associated with the LED i.e. 0x02.
+
+`Byte index 7`
+Binary representation of '#' indicating the end of the message.
+
+###### Report current LED state (Arduino --> DTE)
+This message can be triggered by:
+* Read request from DTE
+* Update request from DTE
+* Internal event from within the Arduino
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
+| 1 | - | - | - | 1 | 0 | 0 | 0 | 0 |
+| 2 | - | - | - | - | - | - | - | - |
+| 3 | - | - | - | - | - | - | - | - |
+| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
+| 7 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+
+`Byte index 0`
+Binary representation of '*' indicating the start of the message.
+
+`Byte index 1`
+BIT4 is true, this is a `notify` message.
+
+`Byte index 2`
+Reserved.
+
+`Byte index 3`
+Reserved.
+
+`Byte index 4`
+Service type, 0x01.
+
+`Byte index 5`
+Content length, 1 byte.
+
+`Byte index 6`
+Message content, the Id associated with the LED i.e. 0x02.
 
 `Byte index 7`
 Binary representation of '#' indicating the end of the message.
