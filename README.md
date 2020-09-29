@@ -1,161 +1,106 @@
-## SMoS - Structured Messaging over Serial
+# SMoS - Structured Messaging over Serial
+![Cover](images/smos_cover_moritz_erken.jpg) *Photo by Moritz Erken*
 
-A SMoS is structured as follow:
-* First byte is the '*' character indicating start of message
-* Second byte is used to indicate message type:
-  + Create request        (BIT0)
-  + Read request          (BIT1)
-  + Update request        (BIT2)
-  + Delete request        (BIT3)
-  + Notify response       (BIT4)
-  + Reserved              (BIT5)
-  + Reserved              (BIT6)
-  + Reserved              (BIT7)
-* Third byte is reserved for future use (this byte will be used to indicate message Id if confirmed messaging is required) 
-* Forth byte is reserved for future use (number of message service types is capped at 255 for now, this byte will be used if more is required)
-* Fifth byte is message service type
-* Sixth byte indicate length of message content
-* Remaining bytes minus the last byte are message content
-* Last byte will be the '#' character indicating end of message
+SMoS is a client/server REST based messaging protocol, originally intended as a mechanism to encapsulate data and it's context when transmitted over a serial link. A more detailed background is described in [Part 6 of An IoT Odyssey]()
 
-String with "*#" which consist of start character followed immediately with end character indicates a reset message.
+##### The SMoS Structure
 
-### Message Examples
+The structure of a SMoS message can be broken down as follow:
 
-#### Reset
+![The SMoS Structure](images/smos_structure.png)
 
-The Reset message, which can be used to sync the sender and the recipient consists of a '*' immediately followed by a '#' character.
+###### Start Code
+  * Every message begins with a colon (ASCII Hex value $3A)
 
-| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
-| 1 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+###### Byte Count
+  * A 2 digit value (1 byte), counting the actual data bytes in the message.
 
-#### Toggle Service (0x01)
+###### Data Context
+  * A 6 digit (3 byte) value, containing various meta data about the message content.
 
-The Toggle service allows the sender to query the state, update the state or be notified of state changes of a property belonging to the recipient.
-The Toggle service message contains 1 byte of content, an Id between 0 - 255 which maps to a property on the recipient side. It is
-up to the recipient to determine what the Id is mapped to what.
+###### Data Content
+  * There can be 0 to 255 data bytes per message.
 
-##### LED example
+###### Checksum
+  * This field is a one byte (2 hex digits) 2's complement checksum of the entire record.
 
-Consider an Arduino with an toggleable LED which it exposed as a Toggle Service with a property Id 0x02. A data terminal equipment (DTE) can interact with the LED as follow:
+##### The Data Context
 
-###### Query current LED state (DTE --> Arduino)
+Unlike the Intel Hex data record, the address and record type fields are not used. Instead these three bytes will be redefined as follow:
 
-| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
-| 1 | - | - | - | 0 | 0 | 0 | 1 | 0 |
-| 2 | - | - | - | - | - | - | - | - |
-| 3 | - | - | - | - | - | - | - | - |
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 7 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
+![Data Context Structure](images/data_context.png)
 
-`Byte index 0`
-Binary representation of '*' indicating the start of the message.
+###### Context Type
+* Two MSB bits of the first byte.
+* The values is defined as follow:
+  + Confirmable (0x0)
+  + Non Confirmable (0x1)
+  + Acknowledgement (0x2)
+  + Non Acknowledgement (0x3)
 
-`Byte index 1`
-BIT1 is true, this is a `read` message.
+###### Content Type
+* Two bits following Context Type.
+* The values is defined as follow:
+  + Generic content (0x0)
+  + Bluetooth GATT content (0x1)
+  + Reserved (0x2)
+  + Reserved (0x3)
 
-`Byte index 2`
-Reserved.
+###### Content Type Options
+* Four LSB bits of the first byte.
+* It's values are determined by the Content Type.
 
-`Byte index 3`
-Reserved.
+###### Code Class
+* Three MSB bits of the second byte.
+* The values is defined as follow:
+  + Request (0x0)
+  + Success response (0x2)
+  + Failed response, sender error (0x4)
+  + Failed response, recipient error (0x5)
 
-`Byte index 4`
-Service type, 0x01.
+###### Code Detail
+* Five LSB bits of the second byte.
+* If code class is 0x0 and code detail is 0x0, it is an empty message.
+* If code class is 0x0 and code detail is not 0x0, then the values is defined as follow:
+  + GET, OBSERVE (0x1)
+  + POST (0x2)
+  + PUT (0x3)
+  + DELETE (0x4)
+* If code class is 0x2, then the values is defined as follow:
+  + CREATED (0x1)
+  + DELETED (0x2)
+  + VALID (0x3)
+  + CHANGED (0x4)
+  + CONTENT (0x5)
+* If code class is 0x4, then the values is defined as follow:
+  + BAD REQUEST (0x0)
+  + UNAUTHORIZED (0x1)
+  + BAD OPTION (0x2)
+  + FORBIDDEN (0x3)
+  + NOT FOUND (0x4)
+  + METHOD NOT ALLOWED (0x5)
+  + NOT ACCEPTABLE (0x6)
+  + PRECONDITION FAILED (0x12)
+  + REQUEST ENTITY TOO LARGE (0x13)
+  + UNSUPPORTED CONTENT FORMAT (0x15)
+* If code class is 0x5, then the values is defined as follow:
+  + INTERNAL SERVER ERROR (0x0)
+  + NOT IMPLEMENTED (0x1)
+  + BAD GATEWAY (0x2)
+  + SERVICE UNAVAILABLE (0x3)
+  + GATEWAY TIMEOUT (0x4)
+  + PROXYING NOT SUPPORTED (0x5)
 
-`Byte index 5`
-Content length, 1 byte.
+###### Message Id
+* Four MSB bits of the third byte.
+* Used to match messages of type Acknowledgement/Reset to messages of type Confirmable/Non-confirmable, and guard against message duplication.
 
-`Byte index 6`
-Message content, the Id associated with the LED i.e. 0x02.
+###### Token Id
+* Four LSB bits of the third byte.
+* Used to correlate notifications with OBSERVE requests.
 
-`Byte index 7`
-Binary representation of '#' indicating the end of the message.
+##### The Data Content
 
-###### Toggle current LED state (DTE --> Arduino)
+The actual user/application data with varying length.
 
-| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
-| 1 | - | - | - | 0 | 0 | 1 | 0 | 0 |
-| 2 | - | - | - | - | - | - | - | - |
-| 3 | - | - | - | - | - | - | - | - |
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 7 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
-
-`Byte index 0`
-Binary representation of '*' indicating the start of the message.
-
-`Byte index 1`
-BIT2 is true, this is an `update` message.
-
-`Byte index 2`
-Reserved.
-
-`Byte index 3`
-Reserved.
-
-`Byte index 4`
-Service type, 0x01.
-
-`Byte index 5`
-Content length, 1 byte.
-
-`Byte index 6`
-Message content, the Id associated with the LED i.e. 0x02.
-
-`Byte index 7`
-Binary representation of '#' indicating the end of the message.
-
-###### Report current LED state (Arduino --> DTE)
-This message can be triggered by:
-* Read request from DTE
-* Update request from DTE
-* Internal event from within the Arduino
-
-| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 |
-| 1 | - | - | - | 1 | 0 | 0 | 0 | 0 |
-| 2 | - | - | - | - | - | - | - | - |
-| 3 | - | - | - | - | - | - | - | - |
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 |
-| 7 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 |
-
-`Byte index 0`
-Binary representation of '*' indicating the start of the message.
-
-`Byte index 1`
-BIT4 is true, this is a `notify` message.
-
-`Byte index 2`
-Reserved.
-
-`Byte index 3`
-Reserved.
-
-`Byte index 4`
-Service type, 0x01.
-
-`Byte index 5`
-Content length, 1 byte.
-
-`Byte index 6`
-Message content, the Id associated with the LED i.e. 0x02.
-
-`Byte index 7`
-Binary representation of '#' indicating the end of the message.
-
----
-
-[Assigned Service Types](AssignedServiceTypes.md)
+![Data Content Structure](images/data_content.png)
