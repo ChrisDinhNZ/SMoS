@@ -18,17 +18,17 @@ Intel Hex is a binary-to-text encoding format, i.e. it allows binary data to be 
 
 ![Intel Hex Record Types](images/ihex_records.png)
 
-For us we don't intend to send files or program across the serial link therefore we are only interested in the Data record type. We also don't intend to persist the data so the *address* field will be unused for now (i.e. address field = 0x0000). If you are curious on how the data record is structured, a more detailed explanation can be found [here](https://web.archive.org/web/20200301224049/https://www.sbprojects.net/knowledge/fileformats/intelhex.php), we will go through some real world scenarios in my next post.
+For us we don't intend to send files or program across the serial link therefore we are only interested in the Data record type. We also don't intend to persist the data so the *address* field will be unused for now (i.e. address field = 0x0000). If you are curious on how the data record is structured, a more detailed explanation can be found [here](https://web.archive.org/web/20200301224049/https://www.sbprojects.net/knowledge/fileformats/intelhex.php).
 
 #### What is the message?
 
 Given we now have the capability to decode the 0s and 1s into a message, our next task is to make sense of the message's content. It could be a string, a number, a toggle state. But how do we know? We need the sender to tag the content for the receiver the make sense of it.
 
-Luckily there are a few well known standard protocols out there that we can model. [Bluetooth BLE](https://www.bluetooth.com) is one such protocol and is very well documented. We will lean somewhat on their Bluetooth [GATT Specifications](https://www.bluetooth.com/specifications/gatt/) for the services and data definition so that we don't need to reinvent the wheel. Based on GATT Specifications, every piece of data is associated with a 16-bit assigned number. We will be using the same assigned number to tag the data going across the serial link. However, there will also be option to send generic data in which case the receiver is assumed to know the context in advance. We will go through some real world scenarios in my next post.
+Luckily there are a few well known standard protocols out there that we can model. [Bluetooth BLE](https://www.bluetooth.com) is one such protocol and is very well documented. We will lean somewhat on their Bluetooth [GATT Specifications](https://www.bluetooth.com/specifications/gatt/) for the services and data definition so that we don't need to reinvent the wheel. Based on GATT Specifications, every piece of data is associated with a 16-bit assigned number. We will be using the same assigned number to tag the data going across the serial link. However, there will also be option to send generic data in which case the receiver is assumed to know the context in advance.
 
 #### What should we do with the message?
 
-Data is meaningless by itself. For the receiver to correctly process the data we need to know the context the data is in. This will be done by tagging the messages with actions (e.g. CRUD operations against databases, GET, POST, PUT, DELETE methods on REST servers). In our case we will model the Constrained Application Protocol (CoAP) as needed to provide the required data context. You can learn more about CoAP [here](https://coap.technology/). We will go through some real world scenarios in my next post.
+Data is meaningless by itself. For the receiver to correctly process the data we need to know the context the data is in. This will be done by tagging the messages with actions (e.g. CRUD operations against databases, GET, POST, PUT, DELETE methods on REST servers). In our case we will model the Constrained Application Protocol (CoAP) as needed to provide the required data context. You can learn more about CoAP [here](https://coap.technology/).
 
 #### So what does SMoS look like?
 
