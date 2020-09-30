@@ -1,4 +1,3 @@
 # SMoS Generic Content Example
 
-* <- [Back](README.md)
-
+* <- [Back](smos_example.md)

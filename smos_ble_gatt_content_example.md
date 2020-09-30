@@ -1,4 +1,3 @@
 # SMoS BLE GATT Content Example
 
-* <- [Back](README.md)
-
+* <- [Back](smos_example.md)
