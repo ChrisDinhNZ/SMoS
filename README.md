@@ -1,106 +1,40 @@
 # SMoS - Structured Messaging over Serial
 ![Cover](images/smos_cover_moritz_erken.jpg) *Photo by Moritz Erken*
 
-SMoS is a client/server REST based messaging protocol, originally intended as a mechanism to encapsulate data and it's context when transmitted over a serial link. A more detailed background is described in [Part 6 of An IoT Odyssey](https://dev.to/chrisdinhnz/smos-structured-messaging-over-serial-part-1-14hf)
+SMoS is a client/server REST based messaging protocol, originally intended as a mechanism to encapsulate data and it's context when transmitted over a serial link.
 
-##### The SMoS Structure
+#### Where does the message starts and where does it ends?
 
-The structure of a SMoS message can be broken down as follow:
+Every message has a beginning and an end. Currently all we know is that bytes of data is being sent from one end to the other, bit by bit across the serial link. We needed some kind protocol to make sense of these data. After some browsing around I came across the following protocols:
+* [Motorola S-record Hex Format](https://en.wikipedia.org/wiki/SREC_(file_format))
+* [Intel Hex Format](https://en.wikipedia.org/wiki/Intel_HEX)
+* [Tektronix Hex Format](https://en.wikipedia.org/wiki/Tektronix_hex_format)
 
-![The SMoS Structure](images/smos_structure.png)
+Of the three, I found the Intel Hex Format's structure to be most suited to our need while not being too overly complicated.
 
-###### Start Code
-  * Every message begins with a colon (ASCII Hex value $3A)
+##### Intel Hex Format
 
-###### Byte Count
-  * A 2 digit value (1 byte), counting the actual data bytes in the message.
+Intel Hex is a binary-to-text encoding format, i.e. it allows binary data to be encoded in a printable (ASCII) format. It has six standard record types:
 
-###### Data Context
-  * A 6 digit (3 byte) value, containing various meta data about the message content.
+![Intel Hex Record Types](images/ihex_records.png)
 
-###### Data Content
-  * There can be 0 to 255 data bytes per message.
+For us we don't intend to send files or program across the serial link therefore we are only interested in the Data record type. We also don't intend to persist the data so the *address* field will be unused for now (i.e. address field = 0x0000). If you are curious on how the data record is structured, a more detailed explanation can be found [here](https://web.archive.org/web/20200301224049/https://www.sbprojects.net/knowledge/fileformats/intelhex.php), we will go through some real world scenarios in my next post.
 
-###### Checksum
-  * This field is a one byte (2 hex digits) 2's complement checksum of the entire record.
+#### What is the message?
 
-##### The Data Context
+Given we now have the capability to decode the 0s and 1s into a message, our next task is to make sense of the message's content. It could be a string, a number, a toggle state. But how do we know? We need the sender to tag the content for the receiver the make sense of it.
 
-Unlike the Intel Hex data record, the address and record type fields are not used. Instead these three bytes will be redefined as follow:
+Luckily there are a few well known standard protocols out there that we can model. [Bluetooth BLE](https://www.bluetooth.com) is one such protocol and is very well documented. We will lean somewhat on their Bluetooth [GATT Specifications](https://www.bluetooth.com/specifications/gatt/) for the services and data definition so that we don't need to reinvent the wheel. Based on GATT Specifications, every piece of data is associated with a 16-bit assigned number. We will be using the same assigned number to tag the data going across the serial link. However, there will also be option to send generic data in which case the receiver is assumed to know the context in advance. We will go through some real world scenarios in my next post.
 
-![Data Context Structure](images/data_context.png)
+#### What should we do with the message?
 
-###### Context Type
-* Two MSB bits of the first byte.
-* The values is defined as follow:
-  + Confirmable (0x0)
-  + Non Confirmable (0x1)
-  + Acknowledgement (0x2)
-  + Non Acknowledgement (0x3)
+Data is meaningless by itself. For the receiver to correctly process the data we need to know the context the data is in. This will be done by tagging the messages with actions (e.g. CRUD operations against databases, GET, POST, PUT, DELETE methods on REST servers). In our case we will model the Constrained Application Protocol (CoAP) as needed to provide the required data context. You can learn more about CoAP [here](https://coap.technology/). We will go through some real world scenarios in my next post.
 
-###### Content Type
-* Two bits following Context Type.
-* The values is defined as follow:
-  + Generic content (0x0)
-  + Bluetooth GATT content (0x1)
-  + Reserved (0x2)
-  + Reserved (0x3)
+#### So what does SMoS look like?
 
-###### Content Type Options
-* Four LSB bits of the first byte.
-* It's values are determined by the Content Type.
+Now that we have discussed the questions we wanted to ask, we can start putting the pieces together and see in theory what Structured Messaging over Serial looks like.
 
-###### Code Class
-* Three MSB bits of the second byte.
-* The values is defined as follow:
-  + Request (0x0)
-  + Success response (0x2)
-  + Failed response, sender error (0x4)
-  + Failed response, recipient error (0x5)
 
-###### Code Detail
-* Five LSB bits of the second byte.
-* If code class is 0x0 and code detail is 0x0, it is an empty message.
-* If code class is 0x0 and code detail is not 0x0, then the values is defined as follow:
-  + GET, OBSERVE (0x1)
-  + POST (0x2)
-  + PUT (0x3)
-  + DELETE (0x4)
-* If code class is 0x2, then the values is defined as follow:
-  + CREATED (0x1)
-  + DELETED (0x2)
-  + VALID (0x3)
-  + CHANGED (0x4)
-  + CONTENT (0x5)
-* If code class is 0x4, then the values is defined as follow:
-  + BAD REQUEST (0x0)
-  + UNAUTHORIZED (0x1)
-  + BAD OPTION (0x2)
-  + FORBIDDEN (0x3)
-  + NOT FOUND (0x4)
-  + METHOD NOT ALLOWED (0x5)
-  + NOT ACCEPTABLE (0x6)
-  + PRECONDITION FAILED (0x12)
-  + REQUEST ENTITY TOO LARGE (0x13)
-  + UNSUPPORTED CONTENT FORMAT (0x15)
-* If code class is 0x5, then the values is defined as follow:
-  + INTERNAL SERVER ERROR (0x0)
-  + NOT IMPLEMENTED (0x1)
-  + BAD GATEWAY (0x2)
-  + SERVICE UNAVAILABLE (0x3)
-  + GATEWAY TIMEOUT (0x4)
-  + PROXYING NOT SUPPORTED (0x5)
-
-###### Message Id
-* Four MSB bits of the third byte.
-* Used to match messages of type Acknowledgement/Reset to messages of type Confirmable/Non-confirmable, and guard against message duplication.
-
-###### Token Id
-* Four LSB bits of the third byte.
-* Used to correlate notifications with OBSERVE requests.
-
-##### The Data Content
-
-The actual user/application data with varying length.
-
-![Data Content Structure](images/data_content.png)
+* ->[SMoS Defined](smos_defined.md)
+* ->[SMoS Generic Content Example](smos_generic_content_example.md)
+* ->[SMoS BLE GATT Content Example](smos_ble_gatt_content_example.md)
