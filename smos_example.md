@@ -16,8 +16,8 @@ This device will have a SMoS codec to handle messages to/from the edge device.
 A device that act as an interface between the digital world and the real world.
 It communicates with the Controller using SMoS messages over a wired/wireless serial connection.
 This device will have a SMoS codec to handle messages to/from the Controller.
-It has an digital output pin which connects to a relay/switch.
-It has an digital input pin which connects to an alarm.
+It has a digital output pin which connects to a relay/switch.
+It has a digital input pin which connects to an alarm.
 
 ###### Switch
 
