@@ -2,30 +2,15 @@
 
 * <- [Back](README.md)
 
-The structure of a SMoS message can be broken down as follow:
+#### The SMoS Packet Structure
 
-![The SMoS Structure](images/smos_structure.png)
+![SMoS Packet Structure](images/smos_packet_structure.png)
 
 ###### Start Code
   * Every message begins with a colon (ASCII Hex value $3A)
 
 ###### Byte Count
   * A 2 digit value (1 byte), counting the actual data bytes in the message.
-
-###### Data Context
-  * A 6 digit (3 byte) value, containing various meta data about the message content.
-
-###### Data Content
-  * There can be 0 to 255 data bytes per message.
-
-###### Checksum
-  * This field is a one byte (2 hex digits) 2's complement checksum of the entire record.
-
-##### The Data Context
-
-Unlike the Intel Hex data record, the address and record type fields are not used. Instead these three bytes will be redefined as follow:
-
-![Data Context Structure](images/data_context.png)
 
 ###### Context Type
 * Two MSB bits of the first byte.
@@ -96,8 +81,9 @@ Unlike the Intel Hex data record, the address and record type fields are not use
 * Four LSB bits of the third byte.
 * Used to correlate notifications with OBSERVE requests.
 
-##### The Data Content
+###### Data Content
+  * There can be 0 to 255 data bytes per message.
 
-The actual user/application data with varying length.
+###### Checksum
+  * This field is a one byte (2 hex digits) 2's complement checksum of the entire record.
 
-![Data Content Structure](images/data_content.png)

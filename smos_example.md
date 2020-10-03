@@ -62,12 +62,12 @@ the second byte to represent the resource's state:
 
 * Start Code = ':'
 * Byte Count = 1
-* Context Type = Non Confirmable
+* Context Type = Non confirmable
 * Content Type = Generic content
 * Content Type Options = None
 * Code Class = Request
 * Code Detail = GET
-* Message Id = Client defined, [0 - 15]
+* Message Id = Sender defined
 * Token Id = 0
 * Data Content = 0x01
 * Checksum = ""
