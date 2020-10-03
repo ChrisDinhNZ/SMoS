@@ -72,7 +72,17 @@ the second byte to represent the resource's state:
 * Data Content = 0x01
 * Checksum = ""
 
-**SMoS string** = ""
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 2 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0x40 |
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x73 |
+
+**SMoS message** = "3A014001100173"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* on
 
