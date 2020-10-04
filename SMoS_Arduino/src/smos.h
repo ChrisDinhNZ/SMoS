@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-enum _SMoSDefinitions
+enum _SMoS_Definitions
 {
    /* Start code */
    SMOS_START_CODE_OFFSET = 0,
@@ -74,7 +74,7 @@ enum _SMoSDefinitions
                             SMOS_CHECKSUM_BYTE_LEN,
 };
 
-enum IHexErrors
+enum SMoS_Errors
 {
    SMOS_ERROR_OK,             /**< Error code for success or no error. */
    SMOS_ERROR_INVALID_MESSAGE /**< Error code for error if an invalid message was received. */
