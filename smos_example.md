@@ -82,7 +82,7 @@ the second byte to represent the resource's state:
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x73 |
 
-**SMoS message** = "3A014001100173"
+**SMoS message** = ":014001100173"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* on
 
