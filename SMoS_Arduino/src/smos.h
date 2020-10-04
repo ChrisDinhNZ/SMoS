@@ -96,6 +96,6 @@ typedef struct
    uint8_t tokenId;
    uint8_t dataContent[SMOS_MAX_DATA_BYTE_LEN];
    uint8_t checksum;
-} SMoSMessage_t;
+} SMoS_t;
 
 #endif
