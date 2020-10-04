@@ -74,9 +74,6 @@ enum _SMoSDefinitions
                             SMOS_CHECKSUM_BYTE_LEN,
 };
 
-/**
- * All possible error codes the Intel HEX8 record utility functions may return.
- */
 enum IHexErrors
 {
    SMOS_ERROR_OK,             /**< Error code for success or no error. */
