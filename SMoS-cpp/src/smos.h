@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-enum _SMoS_Definitions
+typedef enum smosDefinitions_t
 {
    /* Start code */
    SMOS_START_CODE_OFFSET = 0,
@@ -73,28 +73,42 @@ enum _SMoS_Definitions
                             SMOS_MAX_DATA_BYTE_LEN +
                             SMOS_CHECKSUM_BYTE_LEN,
 
-   /* SMoS fields definition */
    SMOS_START_CODE = 0x3A,
+};
 
+typedef enum smosContextType_t
+{
    SMOS_CONTEXT_TYPE_CON = 0x00,
    SMOS_CONTEXT_TYPE_NON = 0x01,
    SMOS_CONTEXT_TYPE_ACK = 0x02,
    SMOS_CONTEXT_TYPE_NACK = 0x03,
+};
 
+typedef enum smosContentType_t
+{
    SMOS_CONTENT_TYPE_GENERIC = 0x00,
    SMOS_CONTENT_TYPE_GATT = 0x01,
+};
 
+typedef enum smosCodeClass_t
+{
    SMOS_CODE_CLASS_REQ = 0x00,
    SMOS_CODE_CLASS_RESP_SUCCESS = 0x02,
    SMOS_CODE_CLASS_RESP_CLIENT_ERROR = 0x04,
    SMOS_CODE_CLASS_RESP_SERVER_ERROR = 0x05,
+};
 
+typedef enum smosCodeDetailRequest_t
+{
    SMOS_CODE_DETAIL_GET = 0x01,
    SMOS_CODE_DETAIL_OBSERVE = SMOS_CODE_DETAIL_GET,
    SMOS_CODE_DETAIL_POST = 0x02,
    SMOS_CODE_DETAIL_PUT = 0x03,
    SMOS_CODE_DETAIL_DELETE = 0x04,
+};
 
+typedef enum smosCodeDetailResponse_t
+{
    SMOS_CODE_DETAIL_SUCCESS_CREATED = 0x01,
    SMOS_CODE_DETAIL_SUCCESS_DELETED = 0x02,
    SMOS_CODE_DETAIL_SUCCESS_VALID = 0x03,
@@ -120,7 +134,7 @@ enum _SMoS_Definitions
    SMOS_CODE_DETAIL_SERVER_ERROR_PROXYING_NOT_SUPPORTED = 0x05
 };
 
-enum SMoS_Errors
+typedef enum smosError_t
 {
    SMOS_ERROR_OK,             /**< Error code for success or no error. */
    SMOS_ERROR_INVALID_MESSAGE /**< Error code for error if an invalid message was received. */
@@ -129,7 +143,7 @@ enum SMoS_Errors
 /**
  * Structure to hold the fields of an SMoS message.
  */
-typedef struct
+typedef struct smosObject_t
 {
    uint8_t startCode;
    uint8_t byteCount;
@@ -142,6 +156,6 @@ typedef struct
    uint8_t tokenId;
    uint8_t dataContent[SMOS_MAX_DATA_BYTE_LEN];
    uint8_t checksum;
-} SMoS_t;
+} ;
 
 #endif
