@@ -12,7 +12,10 @@
             ],
             "intelliSenseMode": "msvc-x64",
             "browse": {
-                "path": ["C:/Program Files (x86)/Arduino/hardware/**"]
+                "path": [
+                    "${workspaceFolder}/**",
+                    "C:/Program Files (x86)/Arduino/hardware/**"
+                ]
             }
         }
     ],

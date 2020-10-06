@@ -1,5 +1,6 @@
 /**
- * SMoS - Library for encoding and decoding of SMoS messages
+ * SMoS - Library for encoding and decoding of SMoS messages.
+ *        Please refer to https://github.com/ChrisDinhNZ/SMoS for more details.
  * Created by Chris Dinh, 2020
  * Released under MIT license
  * 
@@ -156,6 +157,19 @@ typedef struct smosObject_t
    uint8_t tokenId;
    uint8_t dataContent[SMOS_MAX_DATA_BYTE_LEN];
    uint8_t checksum;
-} ;
+};
+
+class SMoS
+{
+   public:      
+      smosError_t EncodeGetMessage(
+         uint8_t byteCount,
+         bool confirmable,
+         smosContentType_t contentType,
+         uint8_t contentTypeOptions,
+         uint8_t messageId,
+         uint8_t const *dataContent,
+         char *smosMessage);
+};
 
 #endif
