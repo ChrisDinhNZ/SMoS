@@ -161,6 +161,8 @@ typedef struct smosObject_t
 
 class SMoS
 {
+   private:
+      static uint8_t CreateChecksum(smosObject_t const *message);
    public:      
       smosError_t EncodeGetMessage(
          uint8_t byteCount,
