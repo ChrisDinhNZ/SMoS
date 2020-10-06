@@ -162,7 +162,11 @@ typedef struct smosObject_t
 class SMoS
 {
    private:
-      static uint8_t CreateChecksum(smosObject_t const *message);
+      static uint8_t CreateChecksum(
+         smosObject_t const *message);
+      static uint16_t ConvertMessageToHexString(
+         smosObject_t const *message,
+         char *hexString);
    public:      
       smosError_t EncodeGetMessage(
          uint8_t byteCount,
@@ -171,7 +175,7 @@ class SMoS
          uint8_t contentTypeOptions,
          uint8_t messageId,
          uint8_t const *dataContent,
-         char *smosMessage);
+         char *hexString);
 };
 
 #endif
