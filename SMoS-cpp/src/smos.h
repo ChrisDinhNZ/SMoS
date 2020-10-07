@@ -163,10 +163,13 @@ class SMoS
 {
    private:
       static uint8_t CreateChecksum(
-         smosObject_t const *message);
+         const smosObject_t *message);
       static uint16_t ConvertMessageToHexString(
-         smosObject_t const *message,
+         const smosObject_t *message,
          char *hexString);
+      static uint8_t CalculateContextByteInfo(
+         const smosObject_t *message,
+         uint8_t contextByteIndex);
    public:      
       smosError_t EncodeGetMessage(
          uint8_t byteCount,
@@ -174,7 +177,7 @@ class SMoS
          smosContentType_t contentType,
          uint8_t contentTypeOptions,
          uint8_t messageId,
-         uint8_t const *dataContent,
+         const uint8_t *dataContent,
          char *hexString);
 };
 

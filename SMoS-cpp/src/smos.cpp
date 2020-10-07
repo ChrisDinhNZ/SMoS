@@ -61,27 +61,12 @@ smosError_t SMoS::EncodeGetMessage(
 static uint8_t SMoS::CreateChecksum(
    const smosObject_t *message)
 {
-   uint8_t checksum, tempByte, i;
+   uint8_t checksum, i;
 
    checksum = message->byteCount;
-
-   /* The next 3 bytes contains the context of the message.
-      Byte 1: Context type, content type, content type options
-      Byte 2: Code class, code detail
-      Byte 3: Message Id, token Id */
-   tempByte = 0; /* Start putting byte 1 together */
-   tempByte |= ((message->contextType << SMOS_CONTEXT_TYPE_LSB_OFFSET) & SMOS_CONTEXT_TYPE_BIT_MASK);
-   tempByte |= ((message->contentType << SMOS_CONTENT_TYPE_LSB_OFFSET) & SMOS_CONTENT_TYPE_BIT_MASK);
-   tempByte |= ((message->contentTypeOptions << SMOS_CONTENT_TYPE_OPTIONS_LSB_OFFSET) & SMOS_CONTENT_TYPE_OPTIONS_BIT_MASK);
-   checksum += tempByte;
-   tempByte = 0; /* Start putting byte 2 together */
-   tempByte |= ((message->codeClass << SMOS_CODE_CLASS_LSB_OFFSET) & SMOS_CODE_CLASS_BIT_MASK);
-   tempByte |= ((message->codeDetail << SMOS_CODE_DETAIL_LSB_OFFSET) & SMOS_CODE_DETAIL_BIT_MASK);
-   checksum += tempByte;
-   tempByte = 0; /* Start putting byte 3 together */
-   tempByte |= ((message->messageId << SMOS_MESSAGE_ID_LSB_OFFSET) & SMOS_MESSAGE_ID_BIT_MASK);
-   tempByte |= ((message->tokenId << SMOS_TOKEN_ID_LSB_OFFSET) & SMOS_TOKEN_ID_BIT_MASK);
-   checksum += tempByte;
+   checksum += CalculateContextByteInfo(message, 0);
+   checksum += CalculateContextByteInfo(message, 1);
+   checksum += CalculateContextByteInfo(message, 2);
 
    for (i = 0; i < message->byteCount; i++)
    {
@@ -95,10 +80,10 @@ static uint8_t SMoS::CreateChecksum(
 }
 
 static uint16_t SMoS::ConvertMessageToHexString(
-   smosObject_t const *message,
+   const smosObject_t *message,
    char *hexString)
 {
-   uint8_t tempByte, i;
+   uint8_t i;
 
    if (message == NULL || hexString == NULL)
    {
@@ -112,24 +97,9 @@ static uint16_t SMoS::ConvertMessageToHexString(
 
    hexString += sprintf(hexString, "%c", message->startCode);
    hexString += sprintf(hexString, "%02X", message->byteCount);
-
-   /* The next 3 bytes contains the context of the message.
-      Byte 1: Context type, content type, content type options
-      Byte 2: Code class, code detail
-      Byte 3: Message Id, token Id */
-   tempByte = 0; /* Start putting byte 1 together */
-   tempByte |= ((message->contextType << SMOS_CONTEXT_TYPE_LSB_OFFSET) & SMOS_CONTEXT_TYPE_BIT_MASK);
-   tempByte |= ((message->contentType << SMOS_CONTENT_TYPE_LSB_OFFSET) & SMOS_CONTENT_TYPE_BIT_MASK);
-   tempByte |= ((message->contentTypeOptions << SMOS_CONTENT_TYPE_OPTIONS_LSB_OFFSET) & SMOS_CONTENT_TYPE_OPTIONS_BIT_MASK);
-   hexString += sprintf(hexString, "%02X", tempByte);
-   tempByte = 0; /* Start putting byte 2 together */
-   tempByte |= ((message->codeClass << SMOS_CODE_CLASS_LSB_OFFSET) & SMOS_CODE_CLASS_BIT_MASK);
-   tempByte |= ((message->codeDetail << SMOS_CODE_DETAIL_LSB_OFFSET) & SMOS_CODE_DETAIL_BIT_MASK);
-   hexString += sprintf(hexString, "%02X", tempByte);
-   tempByte = 0; /* Start putting byte 3 together */
-   tempByte |= ((message->messageId << SMOS_MESSAGE_ID_LSB_OFFSET) & SMOS_MESSAGE_ID_BIT_MASK);
-   tempByte |= ((message->tokenId << SMOS_TOKEN_ID_LSB_OFFSET) & SMOS_TOKEN_ID_BIT_MASK);
-   hexString += sprintf(hexString, "%02X", tempByte);
+   hexString += sprintf(hexString, "%02X", CalculateContextByteInfo(message, 0));
+   hexString += sprintf(hexString, "%02X", CalculateContextByteInfo(message, 1));
+   hexString += sprintf(hexString, "%02X", CalculateContextByteInfo(message, 2));
 
    for (i = 0; i < message->byteCount; i++)
    {
@@ -140,3 +110,35 @@ static uint16_t SMoS::ConvertMessageToHexString(
 
    return strlen(hexString);
 }
+
+static uint8_t SMoS::CalculateContextByteInfo(
+    const smosObject_t *message,
+    uint8_t contextByteIndex)
+{
+   uint8_t tempByte = 0;
+
+   switch (contextByteIndex)
+   {
+      case 0:
+         tempByte |= ((message->contextType << SMOS_CONTEXT_TYPE_LSB_OFFSET) & SMOS_CONTEXT_TYPE_BIT_MASK);
+         tempByte |= ((message->contentType << SMOS_CONTENT_TYPE_LSB_OFFSET) & SMOS_CONTENT_TYPE_BIT_MASK);
+         tempByte |= ((message->contentTypeOptions << SMOS_CONTENT_TYPE_OPTIONS_LSB_OFFSET) & SMOS_CONTENT_TYPE_OPTIONS_BIT_MASK);
+         break;
+
+      case 1:
+         tempByte |= ((message->codeClass << SMOS_CODE_CLASS_LSB_OFFSET) & SMOS_CODE_CLASS_BIT_MASK);
+         tempByte |= ((message->codeDetail << SMOS_CODE_DETAIL_LSB_OFFSET) & SMOS_CODE_DETAIL_BIT_MASK);
+         break;
+
+      case 2:
+         tempByte |= ((message->messageId << SMOS_MESSAGE_ID_LSB_OFFSET) & SMOS_MESSAGE_ID_BIT_MASK);
+         tempByte |= ((message->tokenId << SMOS_TOKEN_ID_LSB_OFFSET) & SMOS_TOKEN_ID_BIT_MASK);
+         break;
+
+      default:
+         break;
+   }
+
+   return tempByte;
+}
+
