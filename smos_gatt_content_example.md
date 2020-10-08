@@ -1,4 +1,4 @@
-# SMoS Example
+# SMoS GATT Content Example
 
 * <- [Back](README.md)
 
@@ -44,58 +44,5 @@ The use cases will be as follow:
 
 From the system point of view, *Edge Device* is a server with 2 resources i.e. the *Switch* and the *Alarm*.
 The *Controller* is the client.
-
-### SMoS Generic Content Example
-
-Custom defined data content. In this case, we will defined the first byte to represent the resource:
-
-* 0x01 = Switch
-* 0x02 = Alarm
-
-the second byte to represent the resource's state:
-* 0x00 = OFF
-* 0x01 = ON
-
-##### Message Examples
-
-###### The *Controller* can request the *Edge Device* what is the state of the *Switch*
-
-* Start Code = ':'
-* Byte Count = 1
-* Context Type = Non confirmable
-* Content Type = Generic content
-* Content Type Options = None
-* Code Class = Request
-* Code Detail = GET
-* Message Id = Sender defined
-* Token Id = 0
-* Data Content = 0x01
-* Checksum = "0xAD"
-
-| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 2 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0x40 |
-| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10 |
-| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 6 | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0xAD |
-
-**SMoS message** = ":0140011001AD"
-
-###### The *Controller* can request the *Edge Device* to turn the *Switch* on
-
-###### The *Controller* can request the *Edge Device* to turn the *Switch* off
-
-###### The *Controller* can request the *Edge Device* what is the state of the *Alarm*
-
-###### The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes
-
-###### If observed, when the *Alarm* turns on, the *Edge Device* will indicate the *Controller* the *Alarm* is on
-
-###### If observed, when the *Alarm* turns off, the *Edge Device* will indicate the *Controller* the *Alarm* is off
-
-###### The *Controller* can request the *Edge Device* that it no longer wants to be notified when state of the *Alarm* changes
 
 ### SMoS BLE GATT Content Example
