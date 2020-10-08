@@ -14,7 +14,7 @@
 /**
  * Takes the provided parameters and create a SMoS Hex string and assign it to hexString.
  */
-smosError_t SMoS::EncodeGetMessage(
+smosError_t SMoS::smos_EncodeGetMessage(
     uint8_t byteCount,
     bool confirmable,
     smosContentType_t contentType,
@@ -58,7 +58,7 @@ smosError_t SMoS::EncodeGetMessage(
    return SMOS_ERROR_OK;
 }
 
-static uint8_t SMoS::CreateChecksum(
+uint8_t SMoS::CreateChecksum(
    const smosObject_t *message)
 {
    uint8_t checksum, i;
@@ -79,7 +79,7 @@ static uint8_t SMoS::CreateChecksum(
    return checksum;
 }
 
-static uint16_t SMoS::ConvertMessageToHexString(
+uint16_t SMoS::ConvertMessageToHexString(
    const smosObject_t *message,
    char *hexString)
 {
@@ -111,7 +111,7 @@ static uint16_t SMoS::ConvertMessageToHexString(
    return strlen(hexString);
 }
 
-static uint8_t SMoS::CalculateContextByteInfo(
+uint8_t SMoS::CalculateContextByteInfo(
     const smosObject_t *message,
     uint8_t contextByteIndex)
 {
