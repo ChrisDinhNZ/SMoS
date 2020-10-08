@@ -70,7 +70,7 @@ the second byte to represent the resource's state:
 * Message Id = Sender defined
 * Token Id = 0
 * Data Content = 0x01
-* Checksum = ""
+* Checksum = "0xAD"
 
 | Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -80,9 +80,9 @@ the second byte to represent the resource's state:
 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
 | 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x73 |
+| 6 | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0xAD |
 
-**SMoS message** = ":014001100173"
+**SMoS message** = ":0140011001AD"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* on
 

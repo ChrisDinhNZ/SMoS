@@ -3,6 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
+                "C:/Program Files (x86)/Arduino/**",
                 "${workspaceFolder}/**"
             ],
             "defines": [
@@ -10,13 +11,7 @@
                 "UNICODE",
                 "_UNICODE"
             ],
-            "intelliSenseMode": "msvc-x64",
-            "browse": {
-                "path": [
-                    "${workspaceFolder}/**",
-                    "C:/Program Files (x86)/Arduino/hardware/**"
-                ]
-            }
+            "intelliSenseMode": "msvc-x64"
         }
     ],
     "version": 4
