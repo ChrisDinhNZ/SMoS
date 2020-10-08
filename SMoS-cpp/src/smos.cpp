@@ -23,7 +23,7 @@ smosError_t SMoS::smos_EncodeGetMessage(
     const uint8_t *dataContent,
     char *hexString)
 {
-   smosObject_t *message;
+   smosObject_t message;
 
    if (dataContent == NULL || hexString == NULL)
    {
@@ -35,22 +35,22 @@ smosError_t SMoS::smos_EncodeGetMessage(
       return SMOS_ERROR_INVALID_MESSAGE;
    }
 
-   memset(message, 0, sizeof(*message));
+   memset(&message, 0, sizeof(message));
    hexString[0] = 0;
 
-   message->startCode = SMOS_START_CODE;
-   message->byteCount = byteCount;
-   message->contextType = confirmable ? SMOS_CONTEXT_TYPE_CON : SMOS_CONTEXT_TYPE_NON;
-   message->contentType = contentType;
-   message->contentTypeOptions = contentTypeOptions;
-   message->codeClass = SMOS_CODE_CLASS_REQ;
-   message->codeDetail = SMOS_CODE_DETAIL_GET;
-   message->messageId = messageId;
-   message->tokenId = 0;
-   memcpy(message->dataContent, dataContent, sizeof(dataContent[0]) * byteCount);
-   message->checksum = CreateChecksum(message);
+   message.startCode = SMOS_START_CODE;
+   message.byteCount = byteCount;
+   message.contextType = confirmable ? SMOS_CONTEXT_TYPE_CON : SMOS_CONTEXT_TYPE_NON;
+   message.contentType = contentType;
+   message.contentTypeOptions = contentTypeOptions;
+   message.codeClass = SMOS_CODE_CLASS_REQ;
+   message.codeDetail = SMOS_CODE_DETAIL_GET;
+   message.messageId = messageId;
+   message.tokenId = 0;
+   memcpy(message.dataContent, dataContent, sizeof(dataContent[0]) * byteCount);
+   message.checksum = CreateChecksum(&message);
 
-   if (ConvertMessageToHexString(message, hexString) == 0)
+   if (ConvertMessageToHexString(&message, hexString) == 0)
    {
       return SMOS_ERROR_INVALID_MESSAGE;
    }
@@ -84,31 +84,36 @@ uint16_t SMoS::ConvertMessageToHexString(
    char *hexString)
 {
    uint8_t i;
+   uint16_t hexStringLength = 0;
 
-   if (message == NULL || hexString == NULL)
-   {
-      return 0;
-   }
-
-   if (message->byteCount > SMOS_MAX_DATA_BYTE_LEN)
+   if (message == NULL ||
+       hexString == NULL ||
+       message->byteCount > SMOS_MAX_DATA_BYTE_LEN)
    {
       return 0;
    }
 
    hexString += sprintf(hexString, "%c", message->startCode);
+   hexStringLength += 1;
    hexString += sprintf(hexString, "%02X", message->byteCount);
+   hexStringLength += 2;
    hexString += sprintf(hexString, "%02X", CalculateContextByteInfo(message, 0));
+   hexStringLength += 2;
    hexString += sprintf(hexString, "%02X", CalculateContextByteInfo(message, 1));
+   hexStringLength += 2;
    hexString += sprintf(hexString, "%02X", CalculateContextByteInfo(message, 2));
+   hexStringLength += 2;
 
    for (i = 0; i < message->byteCount; i++)
    {
       hexString += sprintf(hexString, "%02X", message->dataContent[i]);
+      hexStringLength += 2;
    }
 
    hexString += sprintf(hexString, "%02X", message->checksum);
+   hexStringLength += 2;
 
-   return strlen(hexString);
+   return hexStringLength;
 }
 
 uint8_t SMoS::CalculateContextByteInfo(
