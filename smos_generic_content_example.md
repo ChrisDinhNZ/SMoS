@@ -30,7 +30,6 @@ An alarm which connects to the Edge Device's digital input pin.
 When it's circuit breaks, it will send a signal to the Edge Device and indicates the alarm is on/off.
 
 From the Controller point of view, we want to be able to control the Switch and get notified when the alarm is on or off.
-For simplicity, we will use unconfirmed messaging i.e when the receiver receives a message it will act on the message but will not acknowledge the sender.
 The use cases will be as follow:
 
 1. The *Controller* can request the *Edge Device* what is the state of the *Switch*
@@ -60,7 +59,7 @@ the second byte to represent the resource's state:
 
 * Start Code = ':'
 * Byte Count = 1
-* Context Type = Non confirmable
+* Context Type = Confirmable
 * Content Type = Generic content
 * Content Type Options = None
 * Code Class = Request
@@ -74,13 +73,13 @@ the second byte to represent the resource's state:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 2 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0x40 |
+| 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
 | 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 6 | 1 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0xAD |
+| 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xED |
 
-**SMoS message** = ":0140011001AD"
+**SMoS message** = ":0100011001ED"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* on
 

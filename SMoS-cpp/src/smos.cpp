@@ -16,7 +16,6 @@
  */
 smosError_t SMoS::smos_EncodeGetMessage(
     uint8_t byteCount,
-    bool confirmable,
     smosContentType_t contentType,
     uint8_t contentTypeOptions,
     uint8_t messageId,
@@ -40,7 +39,7 @@ smosError_t SMoS::smos_EncodeGetMessage(
 
    message.startCode = SMOS_START_CODE;
    message.byteCount = byteCount;
-   message.contextType = confirmable ? SMOS_CONTEXT_TYPE_CON : SMOS_CONTEXT_TYPE_NON;
+   message.contextType = SMOS_CONTEXT_TYPE_CON;
    message.contentType = contentType;
    message.contentTypeOptions = contentTypeOptions;
    message.codeClass = SMOS_CODE_CLASS_REQ;

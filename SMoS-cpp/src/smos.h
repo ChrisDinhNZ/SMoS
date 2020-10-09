@@ -173,7 +173,6 @@ class SMoS
    public:      
       smosError_t smos_EncodeGetMessage(
          uint8_t byteCount,
-         bool confirmable,
          smosContentType_t contentType,
          uint8_t contentTypeOptions,
          uint8_t messageId,
