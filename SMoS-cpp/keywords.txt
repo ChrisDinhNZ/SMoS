@@ -1,2 +1,0 @@
-SMoS        KEYWORD1
-smosObject  KEYWORD2

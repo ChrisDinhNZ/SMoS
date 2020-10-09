@@ -38,4 +38,4 @@ Now that we have discussed the questions we wanted to ask, we can start putting 
 * ->[SMoS Defined](smos_defined.md)
 * ->[SMoS Generic Content Example](smos_generic_content_example.md)
 * ->[SMoS GATT Content Example](smos_gatt_content_example.md)
-* ->[SMoS C++ Utility Library](SMoS-cpp/)
+* ->[SMoS C++ Utility Library](https://github.com/ChrisDinhNZ/SMoS-cpp)
