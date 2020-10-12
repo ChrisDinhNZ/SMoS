@@ -32,14 +32,14 @@ When it's circuit breaks, it will send a signal to the Edge Device and indicates
 From the Controller point of view, we want to be able to control the Switch and get notified when the alarm is on or off.
 The use cases will be as follow:
 
-1. The *Controller* can request the *Edge Device* what is the state of the *Switch*
-2. The *Controller* can request the *Edge Device* to turn the *Switch* on
-3. The *Controller* can request the *Edge Device* to turn the *Switch* off
-4. The *Controller* can request the *Edge Device* what is the state of the *Alarm*
-5. The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes
-6. If observed, when the *Alarm* turns on, the *Edge Device* will indicate the *Controller* the *Alarm* is on
-7. If observed, when the *Alarm* turns off, the *Edge Device* will indicate the *Controller* the *Alarm* is off
-8. The *Controller* can request the *Edge Device* that it no longer wants to be notified when state of the *Alarm* changes
+1. [The *Controller* can request the *Edge Device* what is the state of the *Switch*](#the-controller-can-request-the-edge-device-what-is-the-state-of-the-switch)
+2. [The *Controller* can request the *Edge Device* to turn the *Switch* on](#the-controller-can-request-the-edge-device-to-turn-the-switch-on)
+3. [The *Controller* can request the *Edge Device* to turn the *Switch* off](#the-controller-can-request-the-edge-device-to-turn-the-switch-off)
+4. [The *Controller* can request the *Edge Device* what is the state of the *Alarm*](#the-controller-can-request-the-edge-device-what-is-the-state-of-the-alarm)
+5. [The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes](#the-controller-can-request-the-edge-device-that-it-wants-to-be-notified-when-state-of-the-alarm-changes)
+6. [If observed, when the *Alarm* turns on, the *Edge Device* will indicate the *Controller* the *Alarm* is on](#if-observed-when-the-alarm-turns-on-the-edge-device-will-indicate-the-controller-the-alarm-is-on)
+7. [If observed, when the *Alarm* turns off, the *Edge Device* will indicate the *Controller* the *Alarm* is off](#if-observed-when-the-alarm-turns-off-the-edge-device-will-indicate-the-controller-the-alarm-is-off)
+8. [The *Controller* can request the *Edge Device* that it no longer wants to be notified when state of the *Alarm* changes](#the-controller-can-request-the-edge-device-that-it-no-longer-wants-to-be-notified-when-state-of-the-alarm-changes)
 
 From the system point of view, *Edge Device* is a server with 2 resources i.e. the *Switch* and the *Alarm*.
 The *Controller* is the client.
