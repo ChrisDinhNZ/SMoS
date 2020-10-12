@@ -110,6 +110,31 @@ the second byte to represent the resource's state:
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* off
 
+* Start Code = ':'
+* Byte Count = 2
+* Context Type = Confirmable
+* Content Type = Generic content
+* Content Type Options = None
+* Code Class = Request
+* Code Detail = PUT
+* Message Id = Sender defined (e.g. 0x3)
+* Token Id = 0
+* Data Content = 0x0100
+* Checksum = "DA"
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02 |
+| 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03 |
+| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x20 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x00 |
+| 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xDA |
+
+**SMoS Hex string** = "::020003200100DA"
+
 ###### The *Controller* can request the *Edge Device* what is the state of the *Alarm*
 
 ###### The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes
