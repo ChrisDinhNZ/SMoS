@@ -64,7 +64,7 @@ the second byte to represent the resource's state:
 * Content Type Options = None
 * Code Class = Request
 * Code Detail = GET
-* Message Id = Sender defined
+* Message Id = Sender defined (e.g. 0x1)
 * Token Id = 0
 * Data Content = 0x01
 * Checksum = "0xED"
@@ -82,6 +82,31 @@ the second byte to represent the resource's state:
 **SMoS Hex string** = ":0100011001ED"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* on
+
+* Start Code = ':'
+* Byte Count = 2
+* Context Type = Confirmable
+* Content Type = Generic content
+* Content Type Options = None
+* Code Class = Request
+* Code Detail = PUT
+* Message Id = Sender defined (e.g. 0x2)
+* Token Id = 0
+* Data Content = 0x0101
+* Checksum = "0xD9"
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02 |
+| 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03 |
+| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x20 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x01 |
+| 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xD9 |
+
+**SMoS Hex string** = ":020003200101D9"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* off
 
