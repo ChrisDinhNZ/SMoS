@@ -67,7 +67,7 @@ the second byte to represent the resource's state:
 * Message Id = Sender defined
 * Token Id = 0
 * Data Content = 0x01
-* Checksum = "0xAD"
+* Checksum = "0xED"
 
 | Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
