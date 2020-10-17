@@ -79,7 +79,34 @@ the second byte to represent the resource's state:
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
 | 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xED |
 
-**SMoS Hex string** = ":0100011001ED"
+SMoS Hex string = ":0100011001ED"
+
+When the edge device received a request for the state of the switch, it can either respond with an ACK follow by a separate response indicating the switch state or it can respond with an ACK and the switch state included (i.e piggy back response). The following is an example of a piggy back response indicating the switch is on.
+
+* Start Code = ':'
+* Byte Count = 2
+* Context Type = ACK
+* Content Type = Generic content
+* Content Type Options = None
+* Code Class = SUCCESS
+* Code Detail = CONTENT
+* Message Id = Sender defined (e.g. 0x1)
+* Token Id = 0
+* Data Content = 0x0101
+* Checksum = "27"
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02 |
+| 2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80 |
+| 3 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 1 | 0x45 |
+| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x10 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 7 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0x27 |
+
+SMoS Hex string = ":02804510010127"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* on
 
@@ -106,7 +133,7 @@ the second byte to represent the resource's state:
 | 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x01 |
 | 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xD9 |
 
-**SMoS Hex string** = ":020003200101D9"
+SMoS Hex string = ":020003200101D9"
 
 ###### The *Controller* can request the *Edge Device* to turn the *Switch* off
 
@@ -133,7 +160,7 @@ the second byte to represent the resource's state:
 | 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x00 |
 | 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xDA |
 
-**SMoS Hex string** = "::020003200100DA"
+SMoS Hex string = ":020003200100DA"
 
 ###### The *Controller* can request the *Edge Device* what is the state of the *Alarm*
 
