@@ -35,7 +35,7 @@ Data is meaningless by itself. For the receiver to correctly process the data we
 Now that we have discussed the questions we wanted to ask, we can start putting the pieces together and see in theory what Structured Messaging over Serial looks like.
 
 
-* ->[SMoS Defined](smos_defined.md)
-* ->[SMoS Generic Content Example](smos_generic_content_example.md)
-* ->[SMoS GATT Content Example](smos_gatt_content_example.md)
-* ->[SMoS C++ Utility Library](https://github.com/ChrisDinhNZ/SMoS-cpp)
+* -> [SMoS Defined](smos_defined.md)
+* -> [SMoS Generic Content Example](smos_generic_content_example.md)
+* -> SMoS GATT Content Example
+* -> [SMoS C++ Utility Library](https://github.com/ChrisDinhNZ/SMoS-cpp)
