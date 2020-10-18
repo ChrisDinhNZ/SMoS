@@ -35,11 +35,11 @@ The use cases will be as follow:
 1. [The *Controller* can request the *Edge Device* what is the state of the *Switch*](#the-controller-can-request-the-edge-device-what-is-the-state-of-the-switch)
 2. [The *Controller* can request the *Edge Device* to turn the *Switch* on](#the-controller-can-request-the-edge-device-to-turn-the-switch-on)
 3. [The *Controller* can request the *Edge Device* to turn the *Switch* off](#the-controller-can-request-the-edge-device-to-turn-the-switch-off)
-4. [The *Controller* can request the *Edge Device* what is the state of the *Alarm*](#the-controller-can-request-the-edge-device-what-is-the-state-of-the-alarm)
-5. [The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes](#the-controller-can-request-the-edge-device-that-it-wants-to-be-notified-when-state-of-the-alarm-changes)
-6. [If observed, when the *Alarm* turns on, the *Edge Device* will indicate the *Controller* the *Alarm* is on](#if-observed-when-the-alarm-turns-on-the-edge-device-will-indicate-the-controller-the-alarm-is-on)
-7. [If observed, when the *Alarm* turns off, the *Edge Device* will indicate the *Controller* the *Alarm* is off](#if-observed-when-the-alarm-turns-off-the-edge-device-will-indicate-the-controller-the-alarm-is-off)
-8. [The *Controller* can request the *Edge Device* that it no longer wants to be notified when state of the *Alarm* changes](#the-controller-can-request-the-edge-device-that-it-no-longer-wants-to-be-notified-when-state-of-the-alarm-changes)
+4. The *Controller* can request the *Edge Device* what is the state of the *Alarm*
+5. The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes
+6. If observed, when the *Alarm* turns on, the *Edge Device* will indicate the *Controller* the *Alarm* is on
+7. If observed, when the *Alarm* turns off, the *Edge Device* will indicate the *Controller* the *Alarm* is off
+8. The *Controller* can request the *Edge Device* that it no longer wants to be notified when state of the *Alarm* changes
 
 From the system point of view, *Edge Device* is a server with 2 resources i.e. the *Switch* and the *Alarm*.
 The *Controller* is the client.
@@ -53,9 +53,9 @@ the second byte to represent the resource's state:
 * 0x00 = OFF
 * 0x01 = ON
 
-##### Message Examples
+### Message Examples
 
-###### The *Controller* can request the *Edge Device* what is the state of the *Switch*
+#### The *Controller* can request the *Edge Device* what is the state of the *Switch*
 
 * Start Code = ':'
 * Byte Count = 1
@@ -108,7 +108,7 @@ When the edge device received a request for the state of the switch, it can eith
 
 SMoS Hex string = ":02804510010127"
 
-###### The *Controller* can request the *Edge Device* to turn the *Switch* on
+#### The *Controller* can request the *Edge Device* to turn the *Switch* on
 
 * Start Code = ':'
 * Byte Count = 2
@@ -135,7 +135,34 @@ SMoS Hex string = ":02804510010127"
 
 SMoS Hex string = ":020003200101D9"
 
-###### The *Controller* can request the *Edge Device* to turn the *Switch* off
+When the edge device received a request to change the state of the switch, it can either respond with an ACK follow by a separate response or it can respond with an ACK plus the outcome of the request included (i.e piggy back response). The following is an example of a separate response (the edge device will ACK the request, then separately send the response).
+
+* Start Code = ':'
+* Byte Count = 0
+* Context Type = Acknowledgement 
+* Content Type = 0
+* Content Type Options = 0
+* Code Class = 0
+* Code Detail = 0
+* Message Id = Sender defined (e.g. 0x2)
+* Token Id = 0
+* Data Content = 0
+* Checksum = "0x60"
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x00 |
+| 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80 |
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x00 |
+| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x20 |
+| 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x60 |
+
+SMoS Hex string = ":0080002060"
+
+Note that an ACK response without piggy-backed data is an empty message with only the message ID to map to the request. This indicates to the sender that the request has been received and that a response will be provided shortly.
+
+#### The *Controller* can request the *Edge Device* to turn the *Switch* off
 
 * Start Code = ':'
 * Byte Count = 2
@@ -162,12 +189,3 @@ SMoS Hex string = ":020003200101D9"
 
 SMoS Hex string = ":020003200100DA"
 
-###### The *Controller* can request the *Edge Device* what is the state of the *Alarm*
-
-###### The *Controller* can request the *Edge Device* that it wants to be notified when state of the *Alarm* changes
-
-###### If observed, when the *Alarm* turns on, the *Edge Device* will indicate the *Controller* the *Alarm* is on
-
-###### If observed, when the *Alarm* turns off, the *Edge Device* will indicate the *Controller* the *Alarm* is off
-
-###### The *Controller* can request the *Edge Device* that it no longer wants to be notified when state of the *Alarm* changes
