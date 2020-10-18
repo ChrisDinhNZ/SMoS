@@ -128,10 +128,10 @@ SMoS Hex string = ":02804510010127"
 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02 |
 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03 |
-| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x20 |
+| 4 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0x20 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x01 |
-| 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xD9 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 7 | 1 | 1 | 0 | 1 | 1 | 0 | 0 | 1 | 0xD9 |
 
 SMoS Hex string = ":020003200101D9"
 
@@ -152,15 +152,42 @@ When the edge device received a request to change the state of the switch, it ca
 | Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x00 |
-| 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80 |
-| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x00 |
-| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x20 |
-| 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x60 |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
+| 2 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x80 |
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
+| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x20 |
+| 7 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0x60 |
 
 SMoS Hex string = ":0080002060"
 
 Note that an ACK response without piggy-backed data is an empty message with only the message ID to map to the request. This indicates to the sender that the request has been received and that a response will be provided shortly.
+
+Once we have a response ready we can send it to the original sender. However since we already acknowledged the original request we will need to use a new message ID. If we want an acknowledgement to this respone then we can send it as a confirmable message but in this example we don't, so send it as a non-confirmable message.
+
+* Start Code = ':'
+* Byte Count = 2
+* Context Type = Non Confirmable 
+* Content Type = Generic content
+* Content Type Options = None
+* Code Class = Success
+* Code Detail = CHANGED
+* Message Id = Sender defined (e.g. 0x4)
+* Token Id = 0
+* Data Content = 0x0101
+* Checksum = "0x38"
+
+| Byte Index | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 | Hex Value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 0x3A |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02 |
+| 2 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0x40 |
+| 3 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0x44 |
+| 4 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0x40 |
+| 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 7 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0x38 |
+
+SMoS Hex string = ":02404440010138"
 
 #### The *Controller* can request the *Edge Device* to turn the *Switch* off
 
@@ -182,10 +209,10 @@ Note that an ACK response without piggy-backed data is an empty message with onl
 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0x02 |
 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0x03 |
-| 4 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0x20 |
+| 4 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0x20 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 6 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0x00 |
-| 7 | 1 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0xDA |
+| 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
+| 7 | 1 | 1 | 0 | 1 | 1 | 0 | 1 | 0 | 0xDA |
 
 SMoS Hex string = ":020003200100DA"
 
