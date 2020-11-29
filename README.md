@@ -1,5 +1,4 @@
 # SMoS - Structured Messaging over Serial
-![Cover](images/smos_cover_moritz_erken.jpg) *Photo by Moritz Erken*
 
 SMoS is a client/server REST based messaging protocol, originally intended as a mechanism to encapsulate data and it's context when transmitted over a serial link.
 
