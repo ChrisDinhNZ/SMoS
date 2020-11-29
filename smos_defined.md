@@ -18,7 +18,7 @@
   + Confirmable (0x0)
   + Non Confirmable (0x1)
   + Acknowledgement (0x2)
-  + Non Acknowledgement (0x3)
+  + Reset (0x3)
 
 ###### Content Type
 * Two bits following Context Type.
