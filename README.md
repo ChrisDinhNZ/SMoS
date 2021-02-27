@@ -6,5 +6,4 @@ Every message has a beginning and an end. Currently all we know is that data is 
 
 * -> [SMoS Defined](smos_defined.md)
 * -> [SMoS Generic Content Example](smos_generic_content_example.md)
-* -> SMoS GATT Content Example
 * -> [SMoS C++ Utility Library](https://github.com/ChrisDinhNZ/SMoS-cpp)
