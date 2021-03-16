@@ -153,12 +153,12 @@ When the edge device received a request to change the state of the switch, it ca
 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
 | 2 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 0 | 0x68 |
 | 3 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0 | 0x44 |
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
+| 4 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x02 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0x00 |
 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0x01 |
-| 7 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0x52 |
+| 7 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0x51 |
 
-Converting the PDU above to SMoS Hex string gives `:00684401000152`
+Converting the PDU above to SMoS Hex string gives `:00684402000151`
 
 #### The *Controller* request the *Edge Device* to turn the *Switch* on
 
